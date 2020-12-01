@@ -22,7 +22,7 @@ fn main() {
 
     let mut candidates: (i32, i32, i32) = (0, 0, 0);
 
-    // brute force to find which two nums sum to 2020...
+    // brute force to find which three nums sum to 2020...
     let mut done = false;
     // this is not efficient nor pretty
     for i in inputs.iter() {
