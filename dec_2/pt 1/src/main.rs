@@ -1,6 +1,7 @@
 use std::env;
 use std::fs;
 
+// TODO: use the actual errors by validating the final strings before init Entry in ::new
 enum EntryConstructionError {
     PolicyParsingError,
     PasswordParsingError,
@@ -51,6 +52,8 @@ impl Entry<'_> {
             Some(s) => s,
             None => ""
         };
+
+        // TODO: error checking here
 
         return Result::Ok(
             Entry {
