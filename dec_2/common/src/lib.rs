@@ -1,5 +1,6 @@
 pub mod day_two {
     // TODO: use the actual errors by validating the final strings before init Entry in ::new
+    #[derive(Debug)]
     pub enum EntryConstructionError {
         PolicyParsingError,
         PasswordParsingError,
@@ -87,8 +88,35 @@ pub mod day_two {
 
 #[cfg(test)]
 mod tests {
+    use crate::day_two::Entry;
+
     #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
+    fn test_has_letter_enough_when_valid_returns_true() {
+        let valid_entry = Entry::new("2-9 c: ccccccccc").unwrap();
+        assert_eq!(true, valid_entry.has_letter_enough());
+    }
+    
+    #[test]
+    fn test_has_letter_enough_when_invalid_returns_false() {
+        let invalid_entry = Entry::new("1-3 b: cdefg").unwrap();
+        assert_eq!(false, invalid_entry.has_letter_enough());
+    }
+
+    #[test]
+    fn test_has_letter_in_correct_pos_when_valid_returns_true() {
+        let valid_entry = Entry::new("1-3 c: cdefg").unwrap();
+        assert_eq!(true, valid_entry.has_letter_in_correct_pos());
+    }
+
+    #[test]
+    fn test_has_letter_in_correct_pos_when_more_than_one_returns_false() {
+        let valid_entry = Entry::new("1-3 c: cdcfg").unwrap();
+        assert_eq!(false, valid_entry.has_letter_in_correct_pos());
+    }
+
+    #[test]
+    fn test_has_letter_in_correct_pos_when_not_present_returns_false() {
+        let valid_entry = Entry::new("1-3 h: cdefg").unwrap();
+        assert_eq!(false, valid_entry.has_letter_in_correct_pos());
     }
 }
