@@ -1,7 +1,7 @@
-use std::env;
-use std::fs;
 extern crate common;
 use common::day_two::Entry;
+use std::fs;
+use std::env;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -19,7 +19,7 @@ fn main() {
         .filter(|&s| s.len() > 0)
         .map(|&s| Entry::new(s))
         .filter(|er| match er {
-            Ok(e) => e.has_letter_enough(),
+            Ok(e) => e.has_letter_in_correct_pos(),
             Err(_) => false
         })
         .collect::<Vec<_>>();

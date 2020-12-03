@@ -5,7 +5,7 @@ name = "common"
 version = "0.1.0"
 
 [[package]]
-name = "dec_2"
+name = "pt_2"
 version = "0.1.0"
 dependencies = [
  "common",
