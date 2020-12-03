@@ -24,7 +24,7 @@ pub mod day_two {
                 "\nChecking {:?} - counted {} of {} - isValid: {}",
                 self, letter_count, self.required_letter, is_valid
             );
-            return is_valid;
+            is_valid
         }
 
         pub fn has_letter_in_correct_pos(&self) -> bool {
@@ -38,25 +38,25 @@ pub mod day_two {
                 None => false,
             };
 
-            return (match_1 && !match_2) || (!match_1 && match_2);
+            (match_1 && !match_2) || (!match_1 && match_2)
         }
 
-        pub fn new<'a>(raw: &'a str) -> EntryResult<'a> {
+        pub fn new(raw: &'_ str) -> EntryResult<'_> {
             // E.G.: { 3-5 h: hhhhfhh }
             let parts = raw
-                .split(":") // now is ["3-5 h", " hhhhfhh"]
+                .split(':') // now is ["3-5 h", " hhhhfhh"]
                 .collect::<Vec<&str>>();
             let policy_chunks = match parts.get(0) {
                 Some(s) => s,
                 None => "",
             }
-            .split(" ") // gives us ["3-5", "h"]
+            .split(' ') // gives us ["3-5", "h"]
             .collect::<Vec<_>>();
             let range_vec: Vec<u16> = match policy_chunks.get(0) {
                 Some(s) => s,
                 None => "",
             }
-            .split("-")
+            .split('-')
             .collect::<Vec<_>>()
             .iter()
             .map(|s| match s.parse::<u16>() {
@@ -65,7 +65,7 @@ pub mod day_two {
             })
             .collect();
             let password: &str = match parts.get(1) {
-                Some(s) => s,
+                Some(s) => s.trim(),
                 None => "",
             };
 
@@ -77,7 +77,7 @@ pub mod day_two {
                     None => &"",
                 },
                 range: (range_vec[0], range_vec[1]),
-                password: parts[1].trim(),
+                password,
             });
         }
     }

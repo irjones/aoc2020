@@ -13,10 +13,10 @@ fn main() {
     };
 
     let valid_entries = content
-        .split("\n")
+        .split('\n')
         .collect::<Vec<&str>>()
         .iter()
-        .filter(|&s| s.len() > 0)
+        .filter(|&s| !s.is_empty())
         .map(|&s| Entry::new(s))
         .filter(|er| match er {
             Ok(e) => e.has_letter_in_correct_pos(),
