@@ -4,7 +4,7 @@ pub mod day_two {
     pub enum EntryConstructionError {
         PolicyParsingError,
         PasswordParsingError,
-        InvalidEntryString
+        InvalidEntryString,
     }
 
     pub type EntryResult<'a> = Result<Entry<'a>, EntryConstructionError>;
@@ -20,7 +20,10 @@ pub mod day_two {
         pub fn has_letter_enough(&self) -> bool {
             let letter_count = self.password.matches(self.required_letter).count() as u16;
             let is_valid = letter_count >= self.range.0 && letter_count <= self.range.1;
-            print!("\nChecking {:?} - counted {} of {} - isValid: {}", self, letter_count, self.required_letter, is_valid);
+            print!(
+                "\nChecking {:?} - counted {} of {} - isValid: {}",
+                self, letter_count, self.required_letter, is_valid
+            );
             return is_valid;
         }
 
@@ -28,11 +31,11 @@ pub mod day_two {
             let letters = self.password.split("").collect::<Vec<&str>>();
             let match_1 = match letters.get((self.range.0) as usize) {
                 Some(s) => *s == self.required_letter,
-                None => false
+                None => false,
             };
             let match_2 = match letters.get((self.range.1) as usize) {
                 Some(s) => *s == self.required_letter,
-                None => false
+                None => false,
             };
 
             return (match_1 && !match_2) || (!match_1 && match_2);
@@ -40,51 +43,45 @@ pub mod day_two {
 
         pub fn new<'a>(raw: &'a str) -> EntryResult<'a> {
             // E.G.: { 3-5 h: hhhhfhh }
-            let parts = 
-                raw.split(":") // now is ["3-5 h", " hhhhfhh"]
-                    .collect::<Vec<&str>>();
+            let parts = raw
+                .split(":") // now is ["3-5 h", " hhhhfhh"]
+                .collect::<Vec<&str>>();
             let policy_chunks = match parts.get(0) {
-                    Some(s) => s,
-                    None => ""
-                }
-                .split(" ") // gives us ["3-5", "h"]
-                .collect::<Vec<_>>();
+                Some(s) => s,
+                None => "",
+            }
+            .split(" ") // gives us ["3-5", "h"]
+            .collect::<Vec<_>>();
             let range_vec: Vec<u16> = match policy_chunks.get(0) {
-                    Some(s) => s,
-                    None => ""
-                }
-                .split("-")
-                .collect::<Vec<_>>()
-                .iter()
-                .map(|s| match s.parse::<u16>() {
-                    Ok(i) => i,
-                    Err(_) => 0
-                })
-                .collect();
+                Some(s) => s,
+                None => "",
+            }
+            .split("-")
+            .collect::<Vec<_>>()
+            .iter()
+            .map(|s| match s.parse::<u16>() {
+                Ok(i) => i,
+                Err(_) => 0,
+            })
+            .collect();
             let password: &str = match parts.get(1) {
                 Some(s) => s,
-                None => ""
+                None => "",
             };
 
             // TODO: error checking here
 
-            return Result::Ok(
-                Entry {
-                    required_letter: match policy_chunks.get(1) {
-                        Some(chr) => &**chr,
-                        None => &""
-                    },
-                    range: (
-                        range_vec[0],
-                        range_vec[1]
-                    ),
-                    password: parts[1].trim(),
-                }
-            )
+            return Result::Ok(Entry {
+                required_letter: match policy_chunks.get(1) {
+                    Some(chr) => &**chr,
+                    None => &"",
+                },
+                range: (range_vec[0], range_vec[1]),
+                password: parts[1].trim(),
+            });
         }
-    }    
+    }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -95,7 +92,7 @@ mod tests {
         let valid_entry = Entry::new("2-9 c: ccccccccc").unwrap();
         assert_eq!(true, valid_entry.has_letter_enough());
     }
-    
+
     #[test]
     fn test_has_letter_enough_when_invalid_returns_false() {
         let invalid_entry = Entry::new("1-3 b: cdefg").unwrap();
