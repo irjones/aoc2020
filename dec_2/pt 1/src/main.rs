@@ -8,9 +8,9 @@ fn main() {
     let filepath = args.get(1).expect("No filepath given!");
 
     let content = match fs::read_to_string(filepath) {
-            Ok(contents) => contents,
-            Err(err) => panic!("Unable to read file: {}", err)
-        };
+        Ok(contents) => contents,
+        Err(err) => panic!("Unable to read file: {}", err),
+    };
 
     let valid_entries = content
         .split("\n")
@@ -20,9 +20,9 @@ fn main() {
         .map(|&s| Entry::new(s))
         .filter(|er| match er {
             Ok(e) => e.has_letter_enough(),
-            Err(_) => false
+            Err(_) => false,
         })
         .collect::<Vec<_>>();
-    
+
     print!("\n---\nValid Entries: {}\n", valid_entries.len());
 }
