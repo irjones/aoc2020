@@ -1,7 +1,8 @@
 pub mod day_three {
+    #[derive(Debug)]
     pub struct Slope {
-        down: usize,
-        right: usize
+        pub down: usize,
+        pub right: usize
     }
 
     impl Slope {
@@ -69,8 +70,6 @@ pub mod day_three {
                     },
                     None => &'_'
                 }).collect::<Vec<_>>();
-
-            dbg!(&path);
 
             let trees = path.iter().filter(|c| ***c == '#').collect::<Vec<_>>();
 
