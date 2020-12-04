@@ -2,34 +2,32 @@ pub mod day_three {
     #[derive(Debug)]
     pub struct Slope {
         pub down: usize,
-        pub right: usize
+        pub right: usize,
     }
 
     impl Slope {
         pub fn of(x: usize, y: usize) -> Self {
-            Slope {
-                down: y,
-                right: x
-            }
+            Slope { down: y, right: x }
         }
     }
 
     #[derive(Debug)]
     struct Coords {
         x: usize,
-        y: usize
+        y: usize,
     }
 
     #[derive(Debug)]
     pub struct GeoMap {
         pub map_grid: Vec<Vec<char>>,
         self_width: usize,
-        self_height: usize
+        self_height: usize,
     }
 
     impl GeoMap {
         pub fn from_text(text: &'_ str) -> GeoMap {
-            let map_grid: Vec<Vec<char>> = text.split('\n')
+            let map_grid: Vec<Vec<char>> = text
+                .split('\n')
                 .collect::<Vec<_>>()
                 .iter()
                 .filter(|s| !s.is_empty())
@@ -37,16 +35,16 @@ pub mod day_three {
                 .collect::<Vec<_>>();
 
             let self_width = match map_grid.get(0) {
-                    Some(vec_char) => vec_char.len(),
-                    None => 0
-                };
+                Some(vec_char) => vec_char.len(),
+                None => 0,
+            };
 
             let self_height = map_grid.len();
 
             GeoMap {
                 map_grid,
                 self_width,
-                self_height
+                self_height,
             }
         }
 
@@ -62,24 +60,26 @@ pub mod day_three {
                 coordinates.push(coords)
             }
 
-            let path = coordinates.iter()
+            let path = coordinates
+                .iter()
                 .map(|coords| match self.map_grid.get(coords.y) {
                     Some(v) => match v.get(coords.x) {
                         Some(c) => c,
-                        None => &'_'
+                        None => &'_',
                     },
-                    None => &'_'
-                }).collect::<Vec<_>>();
+                    None => &'_',
+                })
+                .collect::<Vec<_>>();
 
-            let trees = path.iter().filter(|c| ***c == '#').collect::<Vec<_>>();
+            let trees = path.iter().filter(|c| ***c == '#').count() as i32;
 
-            trees.len() as i32
+            trees
         }
 
         fn get_next(&self, current_pos: Coords, slope: &Slope) -> Coords {
             Coords {
                 x: (current_pos.x + slope.right) % self.self_width,
-                y: current_pos.y + slope.down
+                y: current_pos.y + slope.down,
             }
         }
     }
@@ -87,13 +87,13 @@ pub mod day_three {
 
 #[cfg(test)]
 mod tests {
+    use crate::day_three::{GeoMap, Slope};
     use std::fs;
-    use crate::day_three::{Slope, GeoMap};
 
     fn get_test_input() -> String {
         match fs::read_to_string("./test") {
             Ok(input) => input,
-            Err(_) => String::from("")
+            Err(_) => String::from(""),
         }
     }
 
@@ -121,7 +121,7 @@ mod tests {
         let slope = Slope::of(3, 1);
         let input = match fs::read_to_string("../input") {
             Ok(content) => content,
-            Err(e) => panic!("Did not read file: {}", e)
+            Err(e) => panic!("Did not read file: {}", e),
         };
 
         let geo_map = GeoMap::from_text(&input);
