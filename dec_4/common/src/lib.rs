@@ -1,8 +1,20 @@
-#[macro_use] extern crate lazy_static;
-extern crate regex;
-use regex::Regex;
+    #[macro_use] extern crate lazy_static;
+    extern crate regex;
 
 pub mod day_four {
+    use regex::Regex;
+
+    pub fn parse_passports<'a>(input: &'a str) -> Vec<Passport<'a>> {
+        lazy_static! {
+            static ref RE: Regex = Regex::new("(.+\n)+").unwrap();
+        }
+
+        return RE.find_iter(&input)
+            .map(|mat| mat.as_str())
+            .map(|s| Passport::from_text(s)).collect();
+    }
+
+    #[derive(Debug)]
     pub struct Passport<'a> {
         birth_year: Option<&'a str>,
         issue_year: Option<&'a str>,
@@ -14,69 +26,100 @@ pub mod day_four {
         country_id: Option<&'a str>
     }
 
-    fn is_present<T>(opt: Option<T>) -> bool {
-        match opt {
-            Some(_) => true,
-            None => false
-        }
-    }
+    fn get_single_with_pattern<'a>(pattern: &str, text: &'a str) -> Option<&'a str> {
 
-    fn get_single_with_pattern(pattern: &str, text: &str) -> Option<&str> {
-        lazy_static! {
-            static ref RE: Regex = match Regex::new(pattern) {
-                Some(r) => r,
-                None => panic!("Invalid pattern {}", pattern)
-            };            
-        }
+        let re: Regex = match Regex::new(pattern) {
+            Ok(r) => r,
+            Err(_) => panic!("Invalid pattern {}", pattern)
+        };            
 
-        if !RE.is_match(text) {
+        if !re.is_match(text) {
             return None;
         }
 
-        let captures = RE.captures_iter(captures);
+        let captures: Vec<&str> = re.find_iter(text)
+            .map(|cap| cap.as_str())
+            .map(|s| match s.split(':').collect::<Vec<&str>>().get(1) {
+                Some(s) => *s,
+                None => ""
+            })
+            .collect();
 
-        if captures.count() > 1 {
+        // if more than 1, oops
+        if captures.len() > 1 {
             return None
         }
 
-        return captures.get(0);
+        //deref by one level so I don't have Option<&&str>
+        return match captures.get(0) {
+            Some(s) => Some(*s), 
+            None => None
+        }
     }
 
     impl Passport<'_> {
         fn from_text<'a>(text: &'a str) -> Passport {
-            // TODO: do patterns
             return Passport {
-                birth_year: get_single_with_pattern("byr", text),
-                issue_year: get_single_with_pattern("iyr", text),
-                expiration_year: get_single_with_pattern("eyr", text),
-                height: get_single_with_pattern("hgt", text),
-                hair_color: get_single_with_pattern("hcl", text),
-                eye_color: get_single_with_pattern("ecl", text),
-                passport_id: get_single_with_pattern("pid", text),
-                country_id: get_single_with_pattern("cid", text)
+                birth_year: get_single_with_pattern("(?:byr:)[^\\s]+", text),
+                issue_year: get_single_with_pattern("(?:iyr:)[^\\s]+", text),
+                expiration_year: get_single_with_pattern("(?:eyr:)[^\\s]+", text),
+                height: get_single_with_pattern("(?:hgt:)[^\\s]+", text),
+                hair_color: get_single_with_pattern("(?:hcl:)[^\\s]+", text),
+                eye_color: get_single_with_pattern("(?:ecl:)[^\\s]+", text),
+                passport_id: get_single_with_pattern("(?:pid:)[^\\s]+", text),
+                country_id: get_single_with_pattern("(?:cid:)[^\\s]+", text)
             }
         }
 
-        fn is_valid(&self) -> bool {
-            is_present(self.birth_year)
-            && is_present(self.issue_year)
-            && is_present(self.expiration_year)
-            && is_present(self.height)
-            && is_present(self.hair_color)
-            && is_present(self.passport_id)
+        pub fn is_valid(&self) -> bool {
+            self.birth_year.is_some()
+            && self.issue_year.is_some()
+            && self.expiration_year.is_some()
+            && self.height.is_some()
+            && self.hair_color.is_some()
+            && self.passport_id.is_some()
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::day_four::{parse_passports};
     use std::fs;
 
     #[test]
     fn it_parses_properly() {
         let input = read_test_file();
         
-        assert_eq!(true, !input.is_empty());
+        let passports = parse_passports(&input);
+        dbg!(&passports);
+        assert_eq!(4, passports.len());
+    }
+
+    #[test]
+    fn it_gives_true_for_valid_passport() {
+        let input = read_test_file();
+
+        let passports = parse_passports(&input);
+        let valid_passport = match passports.get(2) {
+            Some(p) => p,
+            None => panic!("Passports not parsed correctly")
+        };
+
+        assert_eq!(true, valid_passport.is_valid())
+    }
+
+    #[test]
+    fn it_gives_false_for_invalid_passport() {
+        let input = read_test_file();
+
+        let passports = parse_passports(&input);
+        let invalid_passport = match passports.get(1) {
+            Some(p) => p,
+            None => panic!("Passports not parsed correctly")
+        };
+
+        assert_eq!(false, invalid_passport.is_valid())
     }
 
     fn read_test_file() -> String {
