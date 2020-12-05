@@ -60,25 +60,25 @@ function get_seat_coords(inputArr) {
     while (inputArr.length > 0) {
         const next = inputArr.shift();
         switch (next) {
-        case "F": {
-            rowPos = lowerHalf(rowPos);
-            break;
-        }
-        case "B": {
-            rowPos = upperHalf(rowPos);
-            break;
-        }
-        case "R": {
-            columnPos = upperHalf(columnPos);
-            break;
-        }
-        case "L": {
-            columnPos = lowerHalf(columnPos);
-            break;
-        }
-        default: {
-            console.warn("NOP for 'next' value of " + next);
-        }
+            case "F": {
+                rowPos = lowerHalf(rowPos);
+                break;
+            }
+            case "B": {
+                rowPos = upperHalf(rowPos);
+                break;
+            }
+            case "R": {
+                columnPos = upperHalf(columnPos);
+                break;
+            }
+            case "L": {
+                columnPos = lowerHalf(columnPos);
+                break;
+            }
+            default: {
+                console.warn("NOP for 'next' value of " + next);
+            }
         }
     }
 
