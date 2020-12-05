@@ -4,6 +4,7 @@ extern crate regex;
 
 pub mod day_four {
     use regex::Regex;
+    use serde::{Deserialize, Serialize};
 
     pub fn parse_passports<'a>(input: &'a str) -> Vec<Passport<'a>> {
         lazy_static! {
@@ -17,7 +18,7 @@ pub mod day_four {
             .collect();
     }
 
-    #[derive(Debug)]
+    #[derive(Debug, Deserialize, Serialize)]
     pub struct Passport<'a> {
         birth_year: Option<&'a str>,
         issue_year: Option<&'a str>,
@@ -123,7 +124,7 @@ pub mod day_four {
             }) && validate_field(self.expiration_year, &|eyr| {
                 get_single_match_by_pattern("(20(2[0-9]|30))", eyr).is_some()
             }) && validate_field(self.height, &|hgt| {
-                get_single_match_by_pattern("(1([5-8][0-9]|9[0-3])cm)|((59|6[0-9]|7[0-6])in)", hgt)
+                get_single_match_by_pattern("(1([5-8][0-9]|9[0-3])cm)|(^(59|6[0-9]|7[0-6])in)", hgt)
                     .is_some()
             }) && validate_field(self.hair_color, &|hcl| {
                 get_single_match_by_pattern("#[0-9a-f]{6}", hcl).is_some()

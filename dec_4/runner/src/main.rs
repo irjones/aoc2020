@@ -1,6 +1,7 @@
 extern crate common;
 
 use common::day_four::parse_passports;
+use serde_json::to_string_pretty;
 use std::fs;
 use std::env;
 
@@ -18,11 +19,16 @@ fn main() {
     let has_all_fields = passports.iter()
         .filter(|p| p.has_required_fields())
         .count();
-    let are_valid = passports.iter()
+    let are_valid: Vec<_> = passports.iter()
         .filter(|p| p.has_required_fields())
         .filter(|p| p.fields_are_valid())
-        .count();
+        .collect::<Vec<_>>();
     
     print!("\n{} passports with all fields present\n", has_all_fields);
-    print!("\n{} passports with all fields valid\n", are_valid);
+    print!("\n{} passports with all fields valid\n", are_valid.len());
+    let as_json = to_string_pretty(&are_valid).expect("could not write to pretty json");
+    match fs::write("../results.json", as_json) {
+        Ok(_) => true,
+        Err(e) => panic!(e)
+    };
 }
