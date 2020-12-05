@@ -36,13 +36,6 @@ pub mod day_four {
         }
     }
 
-    fn between_values(check_val: &str, a: i32, b: i32) -> bool {
-        match check_val.parse::<i32>() {
-            Ok(i) => i >= a && i <= b,
-            Err(_) => false,
-        }
-    }
-
     fn get_single_match_by_pattern<'a>(pattern: &str, text: &'a str) -> Option<&'a str> {
         let re: Regex = match Regex::new(pattern) {
             Ok(r) => r,
@@ -124,32 +117,21 @@ pub mod day_four {
 
         pub fn fields_are_valid(&self) -> bool {
             validate_field(self.birth_year, &|byr: &str| {
-                between_values(byr, 1920, 2002)
+                get_single_match_by_pattern("(19[2-9][0-9]|200[0-2])", byr).is_some()
             }) && validate_field(self.issue_year, &|iyr: &str| {
-                between_values(iyr, 2010, 2020)
-            }) && validate_field(self.expiration_year, &|eyr| between_values(eyr, 2020, 2030))
-                && validate_field(self.height, &|hgt| {
-                    let val = match get_single_match_by_pattern("\\d+", hgt) {
-                        Some(s) => s,
-                        None => "",
-                    };
-                    if hgt.contains("cm") {
-                        between_values(val, 150, 193)
-                    } else if hgt.contains("in") {
-                        between_values(val, 59, 76)
-                    } else {
-                        false
-                    }
-                })
-                && validate_field(self.hair_color, &|hcl| {
-                    get_single_match_by_pattern("#[a-f\\d]{6}", hcl).is_some()
-                })
-                && validate_field(self.eye_color, &|ecl| {
-                    get_single_match_by_pattern("(amb|blu|brn|gry|grn|hzl|oth)", ecl).is_some()
-                })
-                && validate_field(self.passport_id, &|pid| {
-                    get_single_match_by_pattern("\\d{9}", pid).is_some()
-                })
+                get_single_match_by_pattern("(20(1[0-9]|20))", iyr).is_some()
+            }) && validate_field(self.expiration_year, &|eyr| {
+                get_single_match_by_pattern("(20(2[0-9]|30))", eyr).is_some()
+            }) && validate_field(self.height, &|hgt| {
+                get_single_match_by_pattern("(1([5-8][0-9]|9[0-3])cm)|((59|6[0-9]|7[0-6])in)", hgt)
+                    .is_some()
+            }) && validate_field(self.hair_color, &|hcl| {
+                get_single_match_by_pattern("#[0-9a-f]{6}", hcl).is_some()
+            }) && validate_field(self.eye_color, &|ecl| {
+                get_single_match_by_pattern("(amb|blu|brn|gry|grn|hzl|oth)", ecl).is_some()
+            }) && validate_field(self.passport_id, &|pid| {
+                get_single_match_by_pattern("[0-9]{9}", pid).is_some()
+            })
         }
     }
 }
