@@ -77,6 +77,7 @@ pub mod day_four {
             && self.expiration_year.is_some()
             && self.height.is_some()
             && self.hair_color.is_some()
+            && self.eye_color.is_some()
             && self.passport_id.is_some()
         }
     }
@@ -84,7 +85,7 @@ pub mod day_four {
 
 #[cfg(test)]
 mod tests {
-    use crate::day_four::{parse_passports};
+    use crate::day_four::parse_passports;
     use std::fs;
 
     #[test]
@@ -120,6 +121,16 @@ mod tests {
         };
 
         assert_eq!(false, invalid_passport.is_valid())
+    }
+
+    #[test]
+    fn it_gets_test_input_right() {
+        let input = read_test_file();
+        let passports = parse_passports(&input);
+        let result = passports.iter()
+            .filter(|s| s.is_valid())
+            .count();
+        assert_eq!(2, result);
     }
 
     fn read_test_file() -> String {
