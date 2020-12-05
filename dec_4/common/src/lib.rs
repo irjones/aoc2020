@@ -30,14 +30,10 @@ pub mod day_four {
     }
 
     fn validate_field(field: Option<&str>, validator_f: &dyn Fn(&str) -> bool) -> bool {
-        let result = match field {
+        match field {
             Some(s) => validator_f(s),
             None => false,
-        };
-        if !result {
-            print!("\n{:?} was not valid\n", field)
         }
-        result
     }
 
     fn between_values(check_val: &str, a: i32, b: i32) -> bool {
@@ -211,7 +207,7 @@ mod tests {
         let input = read_custom_file("./invalid_passports");
         let passports = parse_passports(&input);
         let result = passports.iter().filter(|p| !p.fields_are_valid()).count();
-        assert_eq!(4, result);
+        assert_eq!(7, result);
     }
 
     #[test]

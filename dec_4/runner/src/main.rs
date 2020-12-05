@@ -15,9 +15,14 @@ fn main() {
 
     print!("\nTotal: {} passports\n", passports.len());
 
-    let valid_passports = passports.iter()
-        .filter(|p| p.is_valid())
+    let has_all_fields = passports.iter()
+        .filter(|p| p.has_required_fields())
+        .count();
+    let are_valid = passports.iter()
+        .filter(|p| p.has_required_fields())
+        .filter(|p| p.fields_are_valid())
         .count();
     
-    print!("\n{} valid passports\n", valid_passports);
+    print!("\n{} passports with all fields present\n", has_all_fields);
+    print!("\n{} passports with all fields valid\n", are_valid);
 }
