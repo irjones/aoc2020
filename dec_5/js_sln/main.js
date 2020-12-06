@@ -10,7 +10,7 @@ const lines = fs
 const results = new Set(
   lines
     .map((l) => l.split(""))
-    .map(get_seat_coords)
+    .map(getSeatCoords)
     .map(getSeatId)
 );
 
@@ -48,7 +48,7 @@ function lowerHalf(range) {
   };
 }
 
-function get_seat_coords(inputArr) {
+function getSeatCoords(inputArr) {
   let rowPos = {
     lower: 0,
     upper: 127,
