@@ -1,5 +1,3 @@
-// TODO: write this as Rust instead of JS
-
 const fs = require("fs");
 const lines = fs
   .readFileSync("/Users/ianjones/Desktop/day5")
