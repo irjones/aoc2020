@@ -1,7 +1,5 @@
 const fs = require("fs");
 
-// TODO: rust version
-
 const data = fs.readFileSync("/Users/ianjones/Desktop/day6").toString();
 
 const grouped = data.split("\n\n");
